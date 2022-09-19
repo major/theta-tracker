@@ -1,12 +1,6 @@
 name: Run tracker
 on: push
 
-env:
-  POSTGRES_DB: thetatracker
-  POSTGRES_PASSWORD: secrete
-  POSTGRES_PORT: 5432
-  POSTGRES_USER: thetatracker
-
 jobs:
   postgres:
     name: "Run tracker"
@@ -15,6 +9,8 @@ jobs:
     services:
       postgres:
         image: postgres:latest
+        env:
+          POSTGRES_PASSWORD: secrete
         ports:
           - 5432:5432
         options: >-
@@ -30,4 +26,4 @@ jobs:
       - name: Query database
         run: psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
         env:
-          PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          PGPASSWORD: secrete
