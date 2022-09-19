@@ -1,0 +1,33 @@
+name: Run tracker
+on: push
+
+env:
+  POSTGRES_DB: thetatracker
+  POSTGRES_PASSWORD: secrete
+  POSTGRES_PORT: 5432
+  POSTGRES_USER: thetatracker
+
+jobs:
+  postgres:
+    name: "Run tracker"
+    runs-on: ubuntu-latest
+    container: node:latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Query database
+        run: psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
+        env:
+          PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
